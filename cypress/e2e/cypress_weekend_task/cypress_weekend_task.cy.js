@@ -4,11 +4,10 @@ describe('My First Test', () => {
     cy.visit('https://www.kiwi.com/en/airport/bcn/barcelona-el-prat-barcelona-spain/')
     cy.clearCookies()
 
-    cy.get('[data-test="CookiesPopup-Accept"]').click()
+    cy.get('[data-test="CookiesPopup-Accept"]').click() // cookies
   })
 
   it('Visits Barcelona airport', () => {
-// data-test="CloseContainer" - vyskakujici okno
 
 //be.visible
     cy.get('#sticky-search-form').should('be.visible')
@@ -20,13 +19,14 @@ describe('My First Test', () => {
     cy.get('[data-test="NavBar"]').should('be.visible')
   })
 
+  //search form and h1
   it('Barcelona BCN', () => {
     cy.get('[data-test="SearchFieldItem-origin"]').should('contain', 'Barcelona BCN')
     cy.get('h1').should('contain', 'Barcelona–El Prat (BCN)')
   })
 
-  it.only('Ibiza trip', () => {
-    // 💀 💀 //
+  it('Ibiza trip', () => {
+    
     //cy.get('[data-test="PictureCard"]').then(($cards) => {
      // const firstCard = $cards[0] // Cypress._.sample($cards)
      // firstCard.click()
@@ -43,9 +43,10 @@ describe('My First Test', () => {
     cy.get('[data-test="PictureCard"]').first().click()
     cy.url().should('include', 'search/results')
     
-  //prirucni zavazadlo
+  //one cabin bag
     cy.get('[data-test="FilterHeader-bags"]').find('[aria-label="increment"]').first().click()
-  //nove vysledky s prirucnim zavazadlem:
+
+  //results updated
     cy.intercept('https://api.skypicker.com/umbrella/v2/graphql?featureName=SearchReturnItinerariesQuery').as('search')
     cy.wait('@search')
    // cy.get('[data-test="ResultList"]')
