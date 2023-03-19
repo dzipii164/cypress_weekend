@@ -2,15 +2,13 @@
 Cypress._.times(10, () => {
   describe('cypress weekend entry task', () => {
     beforeEach(() => {
+      cy.setCookie('__kwc_agreed', 'true')
       cy.visit('https://www.kiwi.com/en/airport/bcn/barcelona-el-prat-barcelona-spain/')
-      cy.clearCookies()
 
-      cy.get('[data-test="CookiesPopup-Accept"]').click() // cookies
     })
 
-    it('Visits Barcelona airport', () => {
+    it('visits Barcelona airport and checks the visibility of critical components', () => {
 
-      //be.visible, search form, h1
       cy.get('#sticky-search-form').should('be.visible')
       cy.get('[data-test="TrendingDestinations"]').should('be.visible')
       cy.get('[data-test="PopularFlights"]').should('be.visible')
@@ -22,35 +20,21 @@ Cypress._.times(10, () => {
       cy.get('h1').should('contain', 'Barcelona–El Prat (BCN)')
     })
 
-    it.only('Ibiza trip', () => {
-
-      //cy.get('[data-test="PictureCard"]').then(($cards) => {
-      // const firstCard = $cards[0] // Cypress._.sample($cards)
-      // firstCard.click()
-
-      // test that current url matches what we clicked
-      // const cardHref = Cypress.$(firstCard).attr("href")
-      // cy.url().should('include', cardHref)
-      // })
-
-      // cy.get('[data-test="PlacePickerInput-destination"] > [data-test="PlacePickerInputPlace"]').then(($searchButton) => {
-      //   cy.url().should('include', $searchButton.text().toLowerCase())
-      // })
+    it('clicks to the first picture card, adds a cabin bag and tries to make a reservation', () => {
 
       cy.get('[data-test="PictureCard"]').first().click()
       cy.url().should('include', 'search/results')
 
-      //one cabin bag
       cy.get('[data-test="FilterHeader-bags"]').find('[aria-label="increment"]').first().click()
       cy.url().should('include', 'bags=1.0-')
-      
-      //results updated 
+      cy.log('one cabin bag added')
+       
       cy.intercept('https://api.skypicker.com/umbrella/v2/graphql?featureName=SearchReturnItinerariesQuery').as('search')
-      cy.wait('@search')
+      cy.wait('@search', {timeout: 8000})
+      cy.log('results updated')
       
-      //reservation
       cy.get('[data-test="ResultCardWrapper"]').find('[data-test="BookingButton"]').first().click()
-      cy.get('[data-test="MagicLogin-RequiredLogin"]')
+      cy.get('[data-test="MagicLogin-RequiredLogin"]').should('be.visible')
       cy.get('[data-test="MagicLogin-GuestTextLink"]').click()
       cy.url().should('include', 'booking')
     })
