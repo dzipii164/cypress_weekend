@@ -19,6 +19,7 @@ Cypress._.times(10, () => {
       cy.get('[data-test="SearchFieldItem-origin"]').should('contain', 'Barcelona BCN')
       cy.get('h1').should('contain', 'Barcelona–El Prat (BCN)')
     })
+    
 
     it('clicks to the first picture card, adds a cabin bag and tries to make a reservation', () => {
 
